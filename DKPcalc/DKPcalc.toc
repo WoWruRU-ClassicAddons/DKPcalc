@@ -1,0 +1,9 @@
+## Author: Loli
+## Interface: 11200
+## Title: DKPcalc
+## Version: 1.1
+## Notes: by|cff6495ED Loli |r Updated by Bonho
+## Notes-ruRU: ДКП калькулятор. Разработчик - |cff6495ED Loli |rОбновление от |cff6495EDBonho
+## SavedVariablesPerCharacter: DKP, DKPcharID, DKPchanID
+Frame.xml
+Frame.lua

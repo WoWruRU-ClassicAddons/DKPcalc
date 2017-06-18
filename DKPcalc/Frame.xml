@@ -1,0 +1,594 @@
+<Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="Frame.lua" />
+
+	<FontString name="DKP_Calc_Font_Normal" font="Fonts\ARIALN.TTF" virtual="true">
+		<Shadow>
+			<Offset>
+				<AbsDimension x="1" y="-1"/>
+			</Offset>
+			<Color r="0" g="0" b="0"/>
+		</Shadow>
+		<FontHeight>
+			<AbsValue val="11"/>
+		</FontHeight>
+	</FontString>
+
+	<Button name="DKP_Calc_ButtonTemplate" virtual="true">
+	<Size>
+		<AbsDimension x="110" y="50"/>
+	</Size>
+	<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\AddOns\DKPcalc\Textures\UI-Border" tile="false">
+			<BackgroundInsets>
+				<AbsInset bottom="4.1" left="4.1" right="5" top="4.1" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="8"/>
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="8"/>
+			</EdgeSize>
+		</Backdrop>
+	<Layers>
+		<Layer level="BORDER">
+			<FontString name="$parent_ButtonText" inherits="DKP_Calc_Font_Normal" justifyH="MIDDLE" justifyV="MIDDLE" multiLine="true" text="Text">
+				<Size>
+					<AbsDimension x="80" y="50"/>
+				</Size>
+				<Anchors>
+					<Anchor point="CENTER">
+						<Offset>
+							<AbsDimension x="0" y="1"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</FontString>
+			<Texture name="$parent_Icon" file="" alphaMode="BLEND" hidden="true">
+				<Size>
+					<AbsDimension x="20" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="CENTER">
+						<Offset>
+							<AbsDimension x="-30" y="-2"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<TexCoords left="0.05" right="0.95" top="0.05" bottom="0.95" />
+			</Texture>
+		</Layer>
+	</Layers>
+	<Scripts>
+		<OnClick>
+<!--  -->
+		</OnClick>
+	</Scripts>
+	</Button>
+
+	<Frame name="DKPcalc" parent="UIParent" toplevel="true" movable="true" frameStrata="MEDIUM" enableMouse="true">
+		<Size>
+			<AbsDimension x="242" y="240" />
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER">
+				<Offset x="-360" y="25" />
+			</Anchor>
+		</Anchors>
+		<TitleRegion setAllPoints="true">
+			<Size>
+				<AbsDimension x="0" y="30" />
+			</Size>
+			<Anchors>
+				<Anchor point="TOPLEFT" />
+				<Anchor point="TOPRIGHT" />
+			</Anchors>
+		</TitleRegion>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\AddOns\DKPcalc\Textures\UI-Border" tile="false">
+			<BackgroundInsets>
+				<AbsInset bottom="4.1" left="4.1" right="5" top="4.1" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="10"/>
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="10"/>
+			</EdgeSize>
+		</Backdrop>
+		<Frames>
+
+			<Frame name="DKPsendFrameDropDown" inherits="UIDropDownMenuTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DKPcalc" relativePoint="TOPLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-105"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						DKPsendFrameDropDown_OnShow();
+					</OnShow>
+				</Scripts>
+			</Frame>
+      		<Frame name="DKPcharFrameDropDown" inherits="UIDropDownMenuTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DKPcalc" relativePoint="TOPLEFT">
+						<Offset>
+							<AbsDimension x="105" y="-105"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						DKPcharFrameDropDown_OnShow();
+					</OnShow>
+				</Scripts>
+			</Frame>
+			<EditBox name="$parent_EditDKP" inherits="InputBoxTemplate" enableMouse="true" enableKeyboard="true" letters="4" numeric="true" autoFocus="false">
+				<Size>
+					<AbsDimension x="50" y="30" />
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parent_DKPlabel" relativePoint="RIGHT">
+						<Offset x="10" y="0" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnTextChanged>
+						DKP = DKPcalc_EditDKP:GetNumber();
+						if DKP then
+							CalcDKP(DKP);
+						end
+					</OnTextChanged>
+				</Scripts>
+			</EditBox>
+			<Button name="$parent_BIDbutton" inherits="DKP_Calc_ButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+					<Offset>
+						<AbsDimension x="-15" y="-135"/>
+					</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						 DKPCalc_SendDKP_Button_OnClick();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parent_ROLLbutton" inherits="DKP_Calc_ButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+					<Offset>
+						<AbsDimension x="-15" y="-195"/>
+					</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+				        getglobal("DKPcalc_ROLLbutton_Icon"):SetTexture("Interface\\Buttons\\UI-GroupLoot-Dice-Up");
+				        getglobal("DKPcalc_ROLLbutton_Icon"):Show();
+				        getglobal("DKPcalc_ROLLbutton"):SetHeight(30);
+					</OnLoad>
+					<OnClick>
+						RandomRoll(1,100);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parent_BidSuccess_Button_Yes" inherits="DKP_Calc_ButtonTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="DKPcalc" relativePoint="CENTER">
+					<Offset>
+						<AbsDimension x="0" y="-30"/>
+					</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						getglobal("DKPcalc_BidSuccess_Button_Yes_Icon"):SetTexture("Interface\\Icons\\Spell_Shadow_EnslaveDemon");
+				        getglobal("DKPcalc_BidSuccess_Button_Yes_Icon"):Show();
+				        getglobal("DKPcalc_BidSuccess_Button_Yes_Icon"):SetPoint("CENTER",-35,0);
+				        getglobal("DKPcalc_BidSuccess_Button_Yes_ButtonText"):SetTextColor(0.7137254901960784, 0.8431372549019608, 0.2549019607843137, 1);
+				        getglobal("DKPcalc_BidSuccess_Button_Yes_ButtonText"):SetFont("Fonts\\ARIALN.TTF", 15);
+					</OnShow>
+					<OnClick>
+						DKPcalc_BidSuccess_Button_Yes_OnClick();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parent_BidSuccess_Button_No" inherits="DKP_Calc_ButtonTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DKPcalc" relativePoint="CENTER">
+					<Offset>
+						<AbsDimension x="0" y="-30"/>
+					</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						getglobal("DKPcalc_BidSuccess_Button_No_Icon"):SetTexture("Interface\\Icons\\Spell_Fire_Incinerate");
+				        getglobal("DKPcalc_BidSuccess_Button_No_Icon"):Show();
+				        getglobal("DKPcalc_BidSuccess_Button_No_Icon"):SetPoint("CENTER",-35,0);
+				        getglobal("DKPcalc_BidSuccess_Button_No_ButtonText"):SetTextColor(0.9137254901960784, 0.0705882352941176, 0.0705882352941176, 1);
+				        getglobal("DKPcalc_BidSuccess_Button_No_ButtonText"):SetFont("Fonts\\ARIALN.TTF", 15);
+					</OnShow>
+					<OnClick>
+						DKPcalc_BidSuccess_Button_No_OnClick();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="Button_Close" virtual="true">
+				<Size>
+					<AbsDimension x="16" y="16"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-5" y="-5"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						HideUIPanel(DKPcalc);
+					</OnClick>
+				</Scripts>
+				<NormalTexture file="Interface\AddOns\DKPcalc\Textures\Close-Button-Default"/>
+				<PushedTexture file="Interface\AddOns\DKPcalc\Textures\Close-Button-Pressed"/>
+				<HighlightTexture file="Interface\AddOns\DKPcalc\Textures\Close-Button-Hover"/>
+			</Button>
+			<Button name="$parentClearFocus" inherits="UIPanelButtonTemplate" text="ок" hidden="true">
+				<Size>
+					<AbsDimension x="32" y="16" />
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DKPcalc_EditDKP" relativePoint="BOTTOM">
+						<Offset x="-17" y="-5" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						DKPcalc_ClearFocus_OnShow();
+					</OnShow>
+					<OnClick>
+						DKPcalc_EditDKP:ClearFocus();
+						DKPcalcClearFocus:Hide();
+						<!-- DKP = getglobal("DKPcalc_EditDKP"):GetText(); -->
+					</OnClick>
+				</Scripts>
+			</Button>
+ 			<CheckButton name="$parentCheck25" inherits="OptionsCheckButtonTemplate" checked="true">
+				<Size>
+					<AbsDimension x="22" y="22" />
+				</Size>
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentText25" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="10" y="-2" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						DKPCalc_Color_Selected_Bid_OnClick(25);
+					</OnShow>
+					<OnClick>
+						DKPCalc_DKP_OnCheck(25);
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentCheck50" inherits="OptionsCheckButtonTemplate" checked="false">
+				<Size>
+					<AbsDimension x="22" y="22" />
+				</Size>
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentText50" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="10" y="-2" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						DKPCalc_DKP_OnCheck(50);
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentCheck75" inherits="OptionsCheckButtonTemplate" checked="false">
+				<Size>
+					<AbsDimension x="22" y="22" />
+				</Size>
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentText75" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="10" y="-2" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						DKPCalc_DKP_OnCheck(75);
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentCheck100" inherits="OptionsCheckButtonTemplate" checked="false">
+				<Size>
+					<AbsDimension x="22" y="22" />
+				</Size>
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentText100" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="10" y="-2" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						DKPCalc_DKP_OnCheck(100);
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+		</Frames>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="Title" inherits="GameFontNormal" font="Fonts\ARIALN.TTF" text="|cffFF7D0ADKP Калькулятор 1.1|r" justifyV="MIDDLE" justifyH="RIGHT">
+					<Size>
+						<AbsDimension x="155" y="20" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset x="0" y="-10" />
+						</Anchor>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="15" />
+					</FontHeight>
+				</FontString>
+				<FontString name="$parent_BidsTitle" inherits="GameFontNormal" font="Fonts\ARIALN.TTF" text="Ставки" >
+					<Size>
+						<AbsDimension x="50" y="15" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset x="37" y="-128" />
+						</Anchor>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="12" />
+					</FontHeight>
+				</FontString>
+				<FontString name="$parent_CheckBidLabel" inherits="GameFontNormal" font="Fonts\ARIALN.TTF" text="Ставка победила?" justifyV="MIDDLE" justifyH="MIDDLE" hidden="true">
+						<Size>
+							<AbsDimension x="200" y="30" />
+						</Size>
+						<Anchors>
+							<Anchor point="CENTER">
+								<Offset x="0" y="35" />
+							</Anchor>
+						</Anchors>
+						<FontHeight>
+							<AbsValue val="18" />
+						</FontHeight>
+						<Color r="0.9764705882352941" g="0.6352941176470588" b="0.3176470588235294"/>
+				</FontString>
+				<FontString name="$parent_DKPlabel" inherits="GameFontNormal" font="Fonts\ARIALN.TTF" text="DKP " justifyV="MIDDLE" justifyH="RIGHT">
+					<Size>
+						<AbsDimension x="50" y="20" />
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT" relativeTo="DKPcalc" relativePoint="TOPLEFT">
+							<Offset x="84" y="-50" />
+						</Anchor>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="15" />
+					</FontHeight>
+				</FontString>
+				<FontString name="$parent_DKPplayer" inherits="GameFontNormal" font="Fonts\ARIALN.TTF" text="Bonho" justifyV="LEFT" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="150" y="20" />
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parent_DKPlabel" relativePoint="RIGHT">
+							<Offset x="64" y="0" />
+						</Anchor>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="14" />
+					</FontHeight>
+				</FontString>
+				<FontString name="$parent_ChannelLabel" inherits="GameFontNormal" font="Fonts\ARIALN.TTF" text="Канал" justifyV="MIDDLE" justifyH="RIGHT">
+					<Size>
+						<AbsDimension x="75" y="20" />
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="DKPcalc" relativePoint="TOPLEFT">
+							<Offset x="5" y="-80" />
+						</Anchor>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="12" />
+					</FontHeight>
+				</FontString>
+				<FontString name="$parent_CharLabel" inherits="GameFontNormal" font="Fonts\ARIALN.TTF" text="Персонаж" justifyV="MIDDLE" justifyH="RIGHT">
+					<Size>
+						<AbsDimension x="75" y="20" />
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="DKPcalc" relativePoint="TOPLEFT">
+							<Offset x="130" y="-80" />
+						</Anchor>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="12" />
+					</FontHeight>
+				</FontString>
+				<FontString name="$parentText25" inherits="GameFontHighlight" font="Fonts\ARIALN.TTF" text="25%" justifyH="RIGHT">
+					<Size>
+						<AbsDimension x="45" y="15" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset x="35" y="-147" />
+						</Anchor>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="10" />
+					</FontHeight>
+				</FontString>
+				<FontString name="$parentText50" inherits="GameFontHighlight" font="Fonts\ARIALN.TTF" text="50%" justifyH="RIGHT">
+					<Size>
+						<AbsDimension x="45" y="15" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentText25" relativePoint="BOTTOM">
+							<Offset x="0" y="-5" />
+						</Anchor>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="10" />
+					</FontHeight>
+				</FontString>
+				<FontString name="$parentText75" inherits="GameFontHighlight" font="Fonts\ARIALN.TTF" text="75%" justifyH="RIGHT">
+					<Size>
+						<AbsDimension x="45" y="15" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentText50" relativePoint="BOTTOM">
+							<Offset x="0" y="-5" />
+						</Anchor>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="10" />
+					</FontHeight>
+				</FontString>
+				<FontString name="$parentText100" inherits="GameFontHighlight" font="Fonts\ARIALN.TTF" text="100%" justifyH="RIGHT">
+					<Size>
+						<AbsDimension x="45" y="15" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentText75" relativePoint="BOTTOM">
+							<Offset x="0" y="-5" />
+						</Anchor>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="10" />
+					</FontHeight>
+				</FontString>
+				<FontString name="$parentDKP25" inherits="GameFontNormal" font="Fonts\ARIALN.TTF" text="9999" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="50" y="30" />
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentText25" relativePoint="RIGHT">
+							<Offset x="7" y="0" />
+						</Anchor>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="13" />
+					</FontHeight>
+				</FontString>
+				<FontString name="$parentDKP50" inherits="GameFontNormal" font="Fonts\ARIALN.TTF" text="9999" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="50" y="30" />
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentText50" relativePoint="RIGHT">
+							<Offset x="7" y="0" />
+						</Anchor>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="13" />
+					</FontHeight>
+				</FontString>
+				<FontString name="$parentDKP75" inherits="GameFontNormal" font="Fonts\ARIALN.TTF" text="9999" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="50" y="30" />
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentText75" relativePoint="RIGHT">
+							<Offset x="7" y="0" />
+						</Anchor>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="13" />
+					</FontHeight>
+				</FontString>
+				<FontString name="$parentDKP100" inherits="GameFontNormal" font="Fonts\ARIALN.TTF" text="9999" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="50" y="30" />
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentText100" relativePoint="RIGHT">
+							<Offset x="7" y="0" />
+						</Anchor>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="13" />
+					</FontHeight>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				tinsert(UISpecialFrames, this:GetName());
+		        this:RegisterEvent("VARIABLES_LOADED");
+
+		        getglobal("DKPcalc_BIDbutton_ButtonText"):SetText("Сделать ставку");
+		        getglobal("DKPcalc_ROLLbutton_ButtonText"):SetText("Ролл");
+		        getglobal("DKPcalc_BidSuccess_Button_Yes_ButtonText"):SetText("Да");
+		        getglobal("DKPcalc_BidSuccess_Button_No_ButtonText"):SetText("Нет");
+      		</OnLoad>
+			<OnMouseDown>
+		        if button == "LeftButton" and not DKPcalc.isMoving then
+			        DKPcalc:StartMoving();
+			        DKPcalc.isMoving = true;
+		        end
+	      	</OnMouseDown>
+			<OnMouseUp>
+		        if button == "LeftButton" and DKPcalc.isMoving then
+			        DKPcalc:StopMovingOrSizing();
+			        DKPcalc.isMoving = false;
+		        end
+      		</OnMouseUp>
+			<OnHide>
+	        if ( DKPcalc.isMoving ) then
+		        DKPcalc:StopMovingOrSizing();
+		        DKPcalc.isMoving = false;
+	        end
+      		</OnHide>
+			<OnShow>
+				DKPcalc_OnShow();
+			</OnShow>
+			<OnDragStart>DKPcalc:StartMoving();</OnDragStart>
+			<OnDragStop>DKPcalc:StopMovingOrSizing();</OnDragStop>
+			<OnEvent>
+		        if event == "VARIABLES_LOADED" then
+		 			if DKP then
+						DKPcalc_EditDKP:SetText(DKP);
+						CalcDKP(DKP);
+					end
+
+					if DKPchanID == nil then
+						DKPchanID = 1;
+					end
+
+					if DKPcharID == nil then
+						DKPcharID = 1;
+					end
+
+					if DKPcharID then
+						UIDropDownMenu_SetSelectedID(DKPcharFrameDropDown, DKPcharID);
+						UIDropDownMenu_SetText(Char_DKP_source[DKPcharID]["name"], DKPcharFrameDropDown);
+					end
+
+					if DKPchanID then
+						UIDropDownMenu_SetSelectedID(DKPsendFrameDropDown, DKPchanID);
+						UIDropDownMenu_SetText(Dkp_Channels_List[DKPchanID]["name"], DKPsendFrameDropDown);
+					end
+
+					HideUIPanel(DKPcalc);
+		        end
+      		</OnEvent>
+		</Scripts>
+	</Frame>
+</Ui>
